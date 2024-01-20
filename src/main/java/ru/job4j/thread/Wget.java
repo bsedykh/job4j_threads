@@ -8,31 +8,37 @@ import java.nio.file.Files;
 
 public class Wget implements Runnable {
     private final String url;
+    private final String fileName;
     private final int speed;
 
-    public Wget(String url, int speed) {
+    public Wget(String url, String fileName, int speed) {
         this.url = url;
         this.speed = speed;
+        this.fileName = fileName;
     }
 
     @Override
     public void run() {
-        var file = new File("tmp.xml");
+        var file = new File(fileName);
         try (var input = new URL(url).openStream();
              var output = new FileOutputStream(file)) {
             var dataBuffer = new byte[512];
+            int totalBytes = 0;
+            var start = System.currentTimeMillis();
             int bytesRead;
             while ((bytesRead = input.read(dataBuffer, 0, dataBuffer.length)) != -1
                     && !Thread.currentThread().isInterrupted()) {
-                var downloadAt = System.nanoTime();
                 output.write(dataBuffer, 0, bytesRead);
-                var duration = System.nanoTime() - downloadAt;
-                if (duration > 0) {
-                    long sleep = (long) (
-                            (double) bytesRead / duration * 1_000_000 / speed
-                    );
-                    System.out.printf("Sleeping for %d ms%n", sleep);
-                    Thread.sleep(sleep);
+                totalBytes += bytesRead;
+                if (totalBytes >= speed) {
+                    var duration = System.currentTimeMillis() - start;
+                    if (duration < 1000) {
+                        var sleep = 1000 - duration;
+                        System.out.printf("Sleeping for %d ms%n", sleep);
+                        Thread.sleep(sleep);
+                    }
+                    totalBytes = 0;
+                    start = System.currentTimeMillis();
                 }
             }
             System.out.println(Files.size(file.toPath()) + " bytes");
@@ -44,12 +50,13 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Illegal args. Usage: <url> <speed>");
+        if (args.length != 3) {
+            throw new IllegalArgumentException("Illegal args. Usage: <url> <file> <speed>");
         }
         String url = args[0];
-        int speed = Integer.parseInt(args[1]);
-        Thread wget = new Thread(new Wget(url, speed));
+        String fileName = args[1];
+        int speed = Integer.parseInt(args[2]);
+        Thread wget = new Thread(new Wget(url, fileName, speed));
         wget.start();
         wget.join();
     }
