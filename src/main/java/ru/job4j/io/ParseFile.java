@@ -17,7 +17,7 @@ public class ParseFile {
         StringBuilder output = new StringBuilder();
         int data;
         try (var input = new BufferedInputStream(new FileInputStream(file))) {
-            while ((data = input.read()) > 0) {
+            while ((data = input.read()) != -1) {
                 char c = (char) data;
                 if (filter.test(c)) {
                     output.append(c);
