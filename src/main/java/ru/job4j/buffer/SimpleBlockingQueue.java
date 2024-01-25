@@ -23,4 +23,8 @@ public class SimpleBlockingQueue<T> {
         }
         return value;
     }
+
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
+    }
 }
