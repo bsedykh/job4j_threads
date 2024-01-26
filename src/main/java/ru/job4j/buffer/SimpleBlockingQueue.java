@@ -8,10 +8,16 @@ import java.util.Queue;
 
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
+    private static final int DEFAULT_MAX_SIZE = 100;
+
     private final int maxSize;
 
     @GuardedBy("this")
     private final Queue<T> queue = new LinkedList<>();
+
+    public SimpleBlockingQueue() {
+        this.maxSize = DEFAULT_MAX_SIZE;
+    }
 
     public SimpleBlockingQueue(int maxSize) {
         this.maxSize = maxSize;
