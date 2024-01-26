@@ -30,12 +30,12 @@ public class AccountStorage {
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
         var result = false;
-        var srcAccount = getById(fromId).orElse(null);
-        var dstAccount = getById(toId).orElse(null);
-        if (srcAccount != null && dstAccount != null
-                && srcAccount.amount() >= amount) {
-            update(new Account(srcAccount.id(), srcAccount.amount() - amount));
-            update(new Account(dstAccount.id(), dstAccount.amount() + amount));
+        var srcAccount = getById(fromId);
+        var dstAccount = getById(toId);
+        if (srcAccount.isPresent() && dstAccount.isPresent()
+                && srcAccount.get().amount() >= amount) {
+            update(new Account(srcAccount.get().id(), srcAccount.get().amount() - amount));
+            update(new Account(dstAccount.get().id(), dstAccount.get().amount() + amount));
             result = true;
         }
         return result;
