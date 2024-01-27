@@ -18,7 +18,7 @@ class CacheTest {
     }
 
     @Test
-    public void whenAddUpdateFind() throws OptimisticException {
+    public void whenAddUpdateFind() {
         var base = new Base(1, "Base", 1);
         var cache = new Cache();
         cache.add(base);
@@ -40,7 +40,7 @@ class CacheTest {
     }
 
     @Test
-    public void whenMultiUpdateThrowException() throws OptimisticException {
+    public void whenMultiUpdateThrowException() {
         var base = new Base(1,  "Base", 1);
         var cache = new Cache();
         cache.add(base);
@@ -58,7 +58,7 @@ class CacheTest {
     }
 
     @Test
-    public void whenUpdateMissingKeyThenFalse() throws OptimisticException {
+    public void whenUpdateMissingKeyThenFalse() {
         var base = new Base(1,  "Base", 1);
         var cache = new Cache();
         cache.add(base);
