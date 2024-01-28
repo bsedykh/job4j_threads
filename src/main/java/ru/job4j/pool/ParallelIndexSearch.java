@@ -19,7 +19,7 @@ public class ParallelIndexSearch<T> extends RecursiveTask<Integer> {
     @Override
     protected Integer compute() {
         if (to - from <= 10) {
-            return linearSearch(from, to);
+            return linearSearch();
         }
         var middle = (from + to) / 2;
         var leftSearch = new ParallelIndexSearch<>(value, array, from, middle);
@@ -28,11 +28,10 @@ public class ParallelIndexSearch<T> extends RecursiveTask<Integer> {
         rightSearch.fork();
         int left = leftSearch.join();
         int right = rightSearch.join();
-        var result = Math.min(left, right);
-        return result != -1 ? result : Math.max(left, right);
+        return Math.max(left, right);
     }
 
-    private Integer linearSearch(int from, int to) {
+    private Integer linearSearch() {
         int result = -1;
         for (int i = from; i < to; i++) {
             if (array[i].equals(value)) {

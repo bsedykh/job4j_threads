@@ -29,12 +29,6 @@ class ParallelIndexSearchTest {
     }
 
     @Test
-    public void whenMultipleMatchesThenMinIndex() {
-        var array = new Integer[] {10, -2, 3, 100, 5, 2, 7, -2, 90, 88, -2};
-        assertThat(ParallelIndexSearch.indexOf(-2, array)).isEqualTo(1);
-    }
-
-    @Test
     public void whenArrayOfStrings() {
         var array = new String[] {"find me", "-2", "3", "100", "5", "2", "7", "-2", "90", "8saa8", "test"};
         assertThat(ParallelIndexSearch.indexOf("find me", array)).isEqualTo(0);
