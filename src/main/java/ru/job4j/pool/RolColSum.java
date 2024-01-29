@@ -5,27 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class RolColSum {
-    public static class Sums {
-        private int rowSum;
-        private int colSum;
-
-        public int getRowSum() {
-            return rowSum;
-        }
-
-        public void setRowSum(int rowSum) {
-            this.rowSum = rowSum;
-        }
-
-        public int getColSum() {
-            return colSum;
-        }
-
-        public void setColSum(int colSum) {
-            this.colSum = colSum;
-        }
-    }
-
     public static Sums[] sum(int[][] matrix) {
         var result = new Sums[matrix.length];
         for (var i = 0; i < matrix.length; i++) {
@@ -33,8 +12,8 @@ public class RolColSum {
         }
         for (var i = 0; i < matrix.length; i++) {
             for (var j = 0; j < matrix.length; j++) {
-                result[i].rowSum += matrix[i][j];
-                result[j].colSum += matrix[i][j];
+                result[i].setRowSum(result[i].getRowSum() + matrix[i][j]);
+                result[j].setColSum(result[j].getColSum() + matrix[i][j]);
             }
         }
         return result;
@@ -48,10 +27,10 @@ public class RolColSum {
             futures.add(CompletableFuture.supplyAsync(() -> {
                 var sums = new Sums();
                 for (int j = 0; j < matrix.length; j++) {
-                    sums.rowSum += matrix[rc][j];
+                    sums.setRowSum(sums.getRowSum() + matrix[rc][j]);
                 }
                 for (int i = 0; i < matrix.length; i++) {
-                    sums.colSum += matrix[i][rc];
+                    sums.setColSum(sums.getColSum() + matrix[i][rc]);
                 }
                 return sums;
             }));
